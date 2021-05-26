@@ -1,0 +1,253 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js%22%3E"></script>
+
+    <title>Criar Formulário</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #titulo {
+            font-family: poppins;
+            color: black;
+            margin-left: 7%;
+        }
+
+        #subtitulo {
+            font-family: poppins;
+            color: black;
+            margin-left: 10%;
+        }
+
+        fieldset {
+            border: 0;
+        }
+
+        body {
+            background-color: white;
+            font-family: poppins;
+            font-size: 1em;
+            color: black;
+            margin-left: 36%;
+            margin-top: 3%;
+            justify-content: center;
+        }
+
+        input, select, textarea, button {
+            border-radius: 5px;
+        }
+
+        .campo {
+            margin-bottom: 1em;
+        }
+
+            .campo label {
+                margin-bottom: 0.2em;
+                color: blueviolet;
+                display: block;
+            }
+
+        fieldset.grupo .campo {
+            float: left;
+            margin-right: 1em;
+        }
+
+        .campo input[type="text"], .campo input[type="email"], .campo select, .campo textarea {
+            padding: 0.2em;
+            border: 1px solid whitesmoke;
+            box-shadow: 2px 2px 2px rgb( 0,0,0,2);
+            display: block;
+        }
+
+            .campo input:focus, .campo select:focus, .campo textarea:focus {
+                background-color: white;
+            }
+
+        .botao {
+            font-size: 1.2em;
+            background: slateblue;
+            border: 0;
+            margin-bottom: 1em;
+            color: white;
+            padding: 0.2em 0.6em;
+            box-shadow: 2px 2px 2px rgba(0,0,0,2);
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 5);
+            position: absolute;
+            top: 90%;
+            left: 50%;
+            margin-right: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+            .botao:hover {
+                background: #ccbbff;
+                box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 2);
+                text-shadow: none;
+            }
+    </style>
+</head>
+<body>
+    <div id="divform">
+
+        <h1 id="titulo">Criar Formulário</h1>
+        <p id="subtitulo">Complete as informações</p>
+        <form>
+            <br>
+            <fieldset class="grupo">
+
+
+                <div class="campo">
+                    <label for="nome">Nome</label>
+                    <input type="text" name="nome" id="nome" required>
+                </div>
+
+                <div class="campo">
+                    <label>Sobrenome</label>
+                    <input type="text" name="sobrenome" id="sobrenome" required>
+                </div>
+            </fieldset>
+
+            <div class="campo">
+                <label>E-mail</label>
+                <input type="text" name="email" id="email" required>
+            </div>
+
+            <br><br>
+
+            <div class="campo">
+                <label>Quais perguntas deseja fazer?</label>
+                <br>
+                <label>
+                    Usuário *Apenas ao responder um formulário*
+                    <input type="text" name="usuario" id="usuario">
+                </label>
+                <br>
+
+                <label class="campo">
+                    Pergunta 1
+                    <input type="text" name="pergunta1" id="pergunta1" required>
+                </label>
+                <br>
+
+                <label class="campo">
+                    Pergunta 2
+                    <input type="text" name="pergunta2" id="pergunta2" required>
+                </label>
+                <br>
+
+                <label class="campo">
+                    Pergunta 3
+                    <input type="text" name="pergunta3" id="pergunta3" required>
+                </label>
+            </div>
+
+            <div>
+                <label class="campo">
+                    Geolocalização
+                    <input type="text" name="localizacao" id="localizacao">
+                </label>
+            </div>
+
+            <button type="submit" onclick="enviar()">Enviar</button>
+        </form>
+            <button  onclick="listcss('lista')">List</button>
+    </div>
+    <div id="divList" class="row" style="display:none">
+
+        <table id="table">
+            <thead>
+
+                <tr>
+                    <td>Nome</td>
+                    <td>Pergunta 1</td>
+                    <td>Pergunta 2</td>
+                    <td>Pergunta 3</td>
+                    <td>Localização</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody id="list">
+                
+            </tbody>
+        </table>
+
+        <button id="backform" onclick="listcss('voltar')">Voltar</button>
+
+    </div>
+
+    <script>
+        function enviar() {
+           var pergunta1 = $("#pergunta1").val();
+           var pergunta2 = $("#pergunta2").val();
+            var pergunta3 = $("#pergunta3").val();
+            var nome = $("#nome").val();
+            var sobrenome = $("#sobrenome").val();
+            var nomesobrenome = nome + " " + sobrenome;
+
+            
+
+
+            $.ajax({
+              type: "POST",
+                url: '@Url.Action("getForm", "Home2")',
+                data: { pergunta1: pergunta1, pergunta2: pergunta2, pergunta3: pergunta3, nome: nomesobrenome },
+              dataType: "json",
+                success: function (json) {
+
+                    var Array = json[0];
+
+                    var listagem = "<tr>" +
+                                        "<td>"+Array.nome+"</td>" +
+                                        "<td>"+Array.pergunta1+"</td>" +
+                                        "<td>"+Array.pergunta2+"</td>" +
+                                        "<td>"+Array.pergunta3+"</td>" +
+                                        "<td>"+Array.endereco+"</td>" +
+                                        "<td><a href='#'>Detalhes</a></td>" +
+                                   "</tr>";
+
+                    $("#list").append(listagem);
+                 
+              }
+            });
+        }
+
+        function listcss(attr) {
+
+            alert('a');
+
+            var i = $('#list').attr('rows').length;
+
+            alert(i);
+
+            if (attr == 'voltar') {
+
+                $("#divform").fadeIn();
+                $("#divList").fadeOut();
+
+            } else if (attr == 'lista') {
+                $("#divform").fadeOut();
+                $("#divList").fadeIn();
+            }
+
+           
+
+
+        }
+    </script>
+
+</body>
+
+
+
+</html>
